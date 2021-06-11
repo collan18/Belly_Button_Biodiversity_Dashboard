@@ -24,7 +24,7 @@ function buildMetadata(sample) {
         });
 
 
-    buildGauge(result.wfreq);
+
     });
 }        
 
@@ -34,7 +34,7 @@ function buildCharts(sample) {
     d3.json("samples.json").then((data) => {
 
         // - extract the samples from the json
-        var sampleData = data.sampleData;
+        var sampleData = data.samples;
         // - filter the samples for the sample id
         var resultList = sampleData.filter(sampleObj => sampleObj.id == sample);
         // - extract the ids, labels, and values from the filtered result
@@ -69,11 +69,11 @@ function buildCharts(sample) {
 
         // Build a Pie Chart
         var dataArray = [];
-        for (var i=0; i<data.otu_ids.length; i++) {
+        for (var i=0; i<output.otu_ids.length; i++) {
             dataArray.push({
-                "sample_values": data.sample_values[i],
-                "otu_ids": data.otu_ids[i],
-                "otu_labels": data.otu_labels[i]
+                "sample_values": output.sample_values[i],
+                "otu_ids": output.otu_ids[i],
+                "otu_labels": output.otu_labels[i]
             })
         }
 
@@ -104,10 +104,10 @@ function buildCharts(sample) {
         var barData = [
             {
                 y: yticks,
-                x: sampleValues.slice(0, 10).reverse(),
-                text: otuLabels.slice(0, 10).reverse(),
+                x: sample_values.slice(0, 10).reverse(),
+                text: otu_labels.slice(0, 10).reverse(),
                 type: "bar",
-                orientation: "v",
+                orientation: "h",
             }
         ];
 
@@ -127,7 +127,8 @@ function init() {
     // - select the dropdown element in the page
     var selector = d3.select("#selDataset");
     // - loop over the samples.json data to append the .name attribute into the value of an option HTML tag (lookup HTML documentation on dropdown menus)
-    d3.json("/names").then((sampleNames) => {
+    d3.json('samples.json').then((sampleData) => {
+        let sampleNames = sampleData.names;
         sampleNames.forEach((sample) => {
           selector
             .append("option")
